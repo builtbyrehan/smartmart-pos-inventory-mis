@@ -1,29 +1,25 @@
 <div align="center">
 
-<img src="docs/logo.svg" width="120" alt="SmartMart logo" />
-
-<br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:121212,100:1A1A1A&height=160&section=header&text=SmartMart%20POS%20%26%20Inventory&fontColor=C6FF00&fontSize=38&fontAlignY=42&animation=fadeIn&desc=Secure%20Transaction-Driven%20Retail%20Management%20Information%20System&descAlignY=62&descSize=16&descColor=F2F2ED" width="100%" alt="SmartMart banner"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D1F12,50:0F3D24,100:145A32&height=170&section=header&text=SmartMart%20POS%20%26%20Inventory&fontColor=39FF88&fontSize=38&fontAlignY=40&animation=fadeIn&desc=Secure%20Transaction-Driven%20Retail%20Management%20Information%20System&descAlignY=62&descSize=16&descColor=D9F7E4" width="100%" alt="SmartMart banner"/>
 
 <a href="https://github.com/YOUR-USERNAME/smartmart-pos-inventory-mis">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2600&pause=900&color=C6FF00&center=true&vCenter=true&width=680&lines=Operate+efficiently.+Decide+confidently.;Role-based+access+%7C+Atomic+stock+transactions;Real-time+dashboards+%7C+Light+%26+Dark+mode" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2600&pause=900&color=39FF88&center=true&vCenter=true&width=680&lines=Operate+efficiently.+Decide+confidently.;Role-based+access+%7C+Atomic+stock+transactions;Real-time+dashboards+%7C+Light+%26+Dark+mode" alt="Typing SVG" />
 </a>
 
 <br/><br/>
 
-[![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=0B1220)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Typed_UI-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0.46-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![React](https://img.shields.io/badge/React-Frontend-2ECC71?style=for-the-badge&logo=react&logoColor=0B1220)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Typed_UI-1E8449?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-27AE60?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0.46-145A32?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-[![Vite](https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styling-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
-[![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://www.rfc-editor.org/rfc/rfc7519)
+[![Vite](https://img.shields.io/badge/Vite-Build_Tool-52BE80?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styling-16A085?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-1D8348?style=flat-square&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+[![JWT](https://img.shields.io/badge/JWT-Authentication-0B3D20?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://www.rfc-editor.org/rfc/rfc7519)
 [![Vitest](https://img.shields.io/badge/Vitest-Frontend_Testing-6E9F18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Dark Mode](https://img.shields.io/badge/Theme-Light_%2F_Dark-C6FF00?style=flat-square&logo=darkreader&logoColor=black)](#system-preview)
-[![License](https://img.shields.io/badge/License-Academic_Use-8A8A82?style=flat-square)](#academic-information)
+[![Dark Mode](https://img.shields.io/badge/Theme-Light_%2F_Dark-39FF88?style=flat-square&logo=darkreader&logoColor=black)](#system-preview)
+[![License](https://img.shields.io/badge/License-Academic_Use-2E4A3A?style=flat-square)](#academic-information)
 
 <br/>
 
@@ -94,7 +90,7 @@ SmartMart addresses this by providing:
 
 ## System preview
 
-> The interface ships with a fully themed **Light / Dark mode** toggle (top-right, persisted per user) built on a dedicated "Ink & Amber → Charcoal & Chartreuse" design language — distinct status colors for in-stock, low-stock, and out-of-stock states carry through every screen, chart, and table.
+> The interface ships with a fully themed **Light / Dark mode** toggle (top-right, persisted per user) built on a dedicated deep-green design language — distinct status colors for in-stock, low-stock, and out-of-stock states carry through every screen, chart, and table.
 
 ### 🔐 Secure sign-in
 
@@ -359,7 +355,6 @@ POS_IMIS_App/
 │       │   └── main.py       # FastAPI application entry point
 │       └── requirements.txt
 ├── docs/
-│   ├── logo.svg
 │   └── screenshots/
 ├── POS_IMIS_database.sql
 ├── .env.example
@@ -525,6 +520,6 @@ This repository is an academic prototype. Before any production deployment, revi
 
 **Built to demonstrate how validated transactions become reliable management information.**
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:121212,100:1A1A1A&height=100&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D1F12,50:0F3D24,100:145A32&height=100&section=footer" width="100%"/>
 
 </div>

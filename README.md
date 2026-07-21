@@ -1,12 +1,24 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D1F12,50:0F3D24,100:145A32&height=170&section=header&text=SmartMart%20POS%20%26%20Inventory&fontColor=39FF88&fontSize=38&fontAlignY=40&animation=fadeIn&desc=Secure%20Transaction-Driven%20Retail%20Management%20Information%20System&descAlignY=62&descSize=16&descColor=D9F7E4" width="100%" alt="SmartMart banner"/>
+<img src="docs/header-animated.svg" width="100%" alt="SmartMart animated header — pulsing green gradient with rising particles"/>
 
 <a href="https://github.com/YOUR-USERNAME/smartmart-pos-inventory-mis">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2600&pause=900&color=39FF88&center=true&vCenter=true&width=680&lines=Operate+efficiently.+Decide+confidently.;Role-based+access+%7C+Atomic+stock+transactions;Real-time+dashboards+%7C+Light+%26+Dark+mode" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=22&duration=2400&pause=800&color=39FF88&center=true&vCenter=true&width=720&lines=Operate+efficiently.+Decide+confidently.;Role-based+access+%7C+Atomic+stock+transactions;Real-time+dashboards+%7C+Light+%26+Dark+mode;Server-validated+sales+%7C+Zero+trust+on+the+client" alt="Typing SVG" />
 </a>
 
-<br/><br/>
+<br/>
+
+![Status](https://img.shields.io/badge/Status-Academic_Prototype-39FF88?style=for-the-badge)
+![Focus](https://img.shields.io/badge/Focus-Transaction_Integrity-1E8449?style=for-the-badge)
+![Stack](https://img.shields.io/badge/Stack-React_%C2%B7_FastAPI_%C2%B7_MySQL-145A32?style=for-the-badge)
+
+<br/>
+
+```diff
++ One source of truth for sales, purchases, and stock — no spreadsheets, no guesswork.
+```
+
+<br/>
 
 [![React](https://img.shields.io/badge/React-Frontend-2ECC71?style=for-the-badge&logo=react&logoColor=0B1220)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Typed_UI-1E8449?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)

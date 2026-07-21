@@ -15,14 +15,22 @@ import {
 import { api, errorMessage } from '../api/client'
 import { DataTable, type Column } from '../components/DataTable'
 import { Alert, Money, PageHeader, Spinner } from '../components/ui'
+import {
+  chartAxisStroke,
+  chartCursorFill,
+  chartGradients,
+  chartGridStroke,
+  chartTickColor,
+  chartTooltipStyle,
+  fillFor,
+} from '../utils/chartTheme'
 import { formatDate } from '../utils/format'
 
 const reports = [
   {
     id: 'low-inventory',
     name: 'Low-inventory alerts',
-    purpose:
-      'Identify products that require immediate replenishment.',
+    purpose: 'Identify products that require immediate replenishment.',
   },
   {
     id: 'top-profitable-products',
@@ -45,8 +53,7 @@ const reports = [
   {
     id: 'profit-by-category',
     name: 'Profit by category',
-    purpose:
-      'Compare category-level revenue, margin, and profitability.',
+    purpose: 'Compare category-level revenue, margin, and profitability.',
   },
   {
     id: 'customer-analysis',
@@ -57,20 +64,17 @@ const reports = [
   {
     id: 'sales-invoice-details',
     name: 'Sales invoice details',
-    purpose:
-      'Audit every sold item back to its invoice, customer, and cashier.',
+    purpose: 'Audit every sold item back to its invoice, customer, and cashier.',
   },
   {
     id: 'sales-history',
     name: 'Sales history',
-    purpose:
-      'Review the chronological sales record and invoice totals.',
+    purpose: 'Review the chronological sales record and invoice totals.',
   },
   {
     id: 'purchase-history',
     name: 'Purchase history',
-    purpose:
-      'Review supplier receipts and purchasing expenditure.',
+    purpose: 'Review supplier receipts and purchasing expenditure.',
   },
 ]
 
@@ -78,6 +82,7 @@ type ChartBar = {
   key: string
   name: string
   color: string
+  gradient?: string
   money?: boolean
 }
 
@@ -90,77 +95,39 @@ const charts: Record<string, ChartConfiguration> = {
   'low-inventory': {
     x: 'product_name',
     bars: [
-      {
-        key: 'stock_quantity',
-        name: 'Current stock',
-        color: '#f59e0b',
-      },
-      {
-        key: 'reorder_level',
-        name: 'Reorder level',
-        color: '#64748b',
-      },
+      { key: 'stock_quantity', name: 'Current stock', color: '#fbbf24', gradient: 'gradAmber' },
+      { key: 'reorder_level', name: 'Reorder level', color: '#64748b' },
     ],
   },
   'top-profitable-products': {
     x: 'product_name',
     bars: [
-      {
-        key: 'total_profit',
-        name: 'Total profit',
-        color: '#0f766e',
-        money: true,
-      },
+      { key: 'total_profit', name: 'Total profit', color: '#6366f1', gradient: 'gradIndigo', money: true },
     ],
   },
   'monthly-sales': {
     x: 'sales_month',
     bars: [
-      {
-        key: 'total_sales',
-        name: 'Revenue',
-        color: '#0f766e',
-        money: true,
-      },
-      {
-        key: 'gross_profit',
-        name: 'Gross profit',
-        color: '#3b82f6',
-        money: true,
-      },
+      { key: 'total_sales', name: 'Revenue', color: '#6366f1', gradient: 'gradIndigo', money: true },
+      { key: 'gross_profit', name: 'Gross profit', color: '#06b6d4', gradient: 'gradCyan', money: true },
     ],
   },
   'inventory-valuation': {
     x: 'product_name',
     bars: [
-      {
-        key: 'inventory_cost_value',
-        name: 'Inventory cost',
-        color: '#7c3aed',
-        money: true,
-      },
+      { key: 'inventory_cost_value', name: 'Inventory cost', color: '#8b5cf6', gradient: 'gradViolet', money: true },
     ],
   },
   'profit-by-category': {
     x: 'category_name',
     bars: [
-      {
-        key: 'total_profit',
-        name: 'Total profit',
-        color: '#14b8a6',
-        money: true,
-      },
+      { key: 'total_profit', name: 'Total profit', color: '#34d399', gradient: 'gradEmerald', money: true },
     ],
   },
   'customer-analysis': {
     x: 'customer_name',
     bars: [
-      {
-        key: 'total_spent',
-        name: 'Total spent',
-        color: '#2563eb',
-        money: true,
-      },
+      { key: 'total_spent', name: 'Total spent', color: '#3b82f6', gradient: 'gradCyan', money: true },
     ],
   },
 }
@@ -171,11 +138,7 @@ type Report = {
   rows: Array<Record<string, unknown>>
 }
 
-const moneyColumns = new Set([
-  'total',
-  'total_sales',
-  'line_total',
-])
+const moneyColumns = new Set(['total', 'total_sales', 'line_total'])
 
 const headerLabels: Record<string, string> = {
   product_id: 'ID',
@@ -211,29 +174,15 @@ const headerLabels: Record<string, string> = {
   invoice_number: 'Invoice',
 }
 
-const tooltipStyle = {
-  borderRadius: '12px',
-  border: '1px solid #e2e8f0',
-  boxShadow: '0 10px 25px rgba(15, 23, 42, 0.08)',
-}
-
 const formatMoney = (value: unknown) => {
   const number = Number(value)
-
-  if (!Number.isFinite(number)) {
-    return 'Rs 0'
-  }
-
+  if (!Number.isFinite(number)) return 'Rs 0'
   return `Rs ${number.toLocaleString('en-PK')}`
 }
 
 const formatCompactMoney = (value: unknown) => {
   const number = Number(value)
-
-  if (!Number.isFinite(number)) {
-    return 'Rs 0'
-  }
-
+  if (!Number.isFinite(number)) return 'Rs 0'
   return `Rs ${new Intl.NumberFormat('en-PK', {
     notation: 'compact',
     maximumFractionDigits: 1,
@@ -241,60 +190,33 @@ const formatCompactMoney = (value: unknown) => {
 }
 
 const formatHeader = (key: string) => {
-  if (headerLabels[key]) {
-    return headerLabels[key]
-  }
-
+  if (headerLabels[key]) return headerLabels[key]
   return key
     .replaceAll('_', ' ')
     .replace(/\b\w/g, (character) => character.toUpperCase())
 }
 
-const isMoneyColumn = (key: string) => {
-  return (
-    moneyColumns.has(key) ||
-    /(amount|price|revenue|cost|profit|value|spent|average)/.test(
-      key,
-    )
-  )
-}
+const isMoneyColumn = (key: string) =>
+  moneyColumns.has(key) ||
+  /(amount|price|revenue|cost|profit|value|spent|average)/.test(key)
 
 const renderValue = (key: string, value: unknown) => {
-  if (value === null || value === undefined || value === '') {
-    return '—'
-  }
-
-  if (key.includes('date')) {
-    return formatDate(String(value))
-  }
-
+  if (value === null || value === undefined || value === '') return '—'
+  if (key.includes('date')) return formatDate(String(value))
   if (key.includes('percent')) {
     const number = Number(value)
-
     return Number.isFinite(number)
-      ? `${number.toLocaleString('en-PK', {
-          maximumFractionDigits: 2,
-        })}%`
+      ? `${number.toLocaleString('en-PK', { maximumFractionDigits: 2 })}%`
       : '—'
   }
-
-  if (isMoneyColumn(key)) {
-    return <Money value={Number(value)} />
-  }
-
-  if (typeof value === 'number') {
-    return value.toLocaleString('en-PK')
-  }
-
+  if (isMoneyColumn(key)) return <Money value={Number(value)} />
+  if (typeof value === 'number') return value.toLocaleString('en-PK')
   return String(value)
 }
 
 const shortenAxisLabel = (value: unknown) => {
   const label = String(value)
-
-  return label.length > 18
-    ? `${label.slice(0, 16)}…`
-    : label
+  return label.length > 18 ? `${label.slice(0, 16)}…` : label
 }
 
 export function ReportsPage() {
@@ -303,9 +225,7 @@ export function ReportsPage() {
   const query = useQuery({
     queryKey: ['report', selected],
     queryFn: () =>
-      api
-        .get<Report>(`/reports/${selected}`)
-        .then((response) => response.data),
+      api.get<Report>(`/reports/${selected}`).then((response) => response.data),
   })
 
   const selectedReport =
@@ -322,23 +242,16 @@ export function ReportsPage() {
   }))
 
   const download = async () => {
-    const response = await api.get(
-      `/reports/${selected}/csv`,
-      {
-        responseType: 'blob',
-      },
-    )
-
+    const response = await api.get(`/reports/${selected}/csv`, {
+      responseType: 'blob',
+    })
     const url = URL.createObjectURL(response.data)
     const link = document.createElement('a')
-
     link.href = url
     link.download = `${selected}.csv`
-
     document.body.appendChild(link)
     link.click()
     link.remove()
-
     URL.revokeObjectURL(url)
   }
 
@@ -346,14 +259,10 @@ export function ReportsPage() {
     value: unknown,
     name: unknown,
   ): [string, string] => {
-    const bar = chartConfig?.bars.find(
-      (item) => item.name === String(name),
-    )
-
+    const bar = chartConfig?.bars.find((item) => item.name === String(name))
     const formattedValue = bar?.money
       ? formatMoney(value)
       : Number(value).toLocaleString('en-PK')
-
     return [formattedValue, bar?.name ?? String(name)]
   }
 
@@ -379,7 +288,6 @@ export function ReportsPage() {
 
       <div className="card mb-5 p-4">
         <label className="label">Report</label>
-
         <select
           className="input max-w-sm"
           value={selected}
@@ -391,11 +299,8 @@ export function ReportsPage() {
             </option>
           ))}
         </select>
-
-        <p className="mt-3 text-sm text-slate-500">
-          <strong className="text-slate-700">
-            Managerial purpose:
-          </strong>{' '}
+        <p className="mt-3 text-sm text-muted">
+          <strong className="text-fg">Managerial purpose:</strong>{' '}
           {selectedReport.purpose}
         </p>
       </div>
@@ -409,11 +314,8 @@ export function ReportsPage() {
           {chartConfig && query.data!.rows.length > 0 ? (
             <section className="card p-5">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="font-bold text-slate-900">
-                  Visual summary
-                </h2>
-
-                <span className="text-xs font-medium text-slate-500">
+                <h2 className="font-bold text-fg">Visual summary</h2>
+                <span className="text-xs font-medium text-muted">
                   {chartUsesMoney
                     ? 'Values in PKR'
                     : `${query.data!.rows.length} records`}
@@ -432,10 +334,12 @@ export function ReportsPage() {
                     }}
                     accessibilityLayer
                   >
+                    <defs>{chartGradients}</defs>
+
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
-                      stroke="#e2e8f0"
+                      stroke={chartGridStroke()}
                     />
 
                     <XAxis
@@ -446,7 +350,8 @@ export function ReportsPage() {
                       textAnchor="end"
                       height={78}
                       tickLine={false}
-                      axisLine={{ stroke: '#cbd5e1' }}
+                      axisLine={{ stroke: chartAxisStroke() }}
+                      tick={{ fill: chartTickColor() }}
                       tickFormatter={shortenAxisLabel}
                     />
 
@@ -455,6 +360,7 @@ export function ReportsPage() {
                       fontSize={11}
                       tickLine={false}
                       axisLine={false}
+                      tick={{ fill: chartTickColor() }}
                       tickFormatter={(value) =>
                         chartUsesMoney
                           ? formatCompactMoney(value)
@@ -464,10 +370,8 @@ export function ReportsPage() {
 
                     <Tooltip
                       formatter={formatChartTooltip}
-                      contentStyle={tooltipStyle}
-                      cursor={{
-                        fill: 'rgba(148, 163, 184, 0.12)',
-                      }}
+                      contentStyle={chartTooltipStyle()}
+                      cursor={{ fill: chartCursorFill() }}
                     />
 
                     <Legend
@@ -475,7 +379,7 @@ export function ReportsPage() {
                       align="right"
                       iconType="circle"
                       iconSize={9}
-                      wrapperStyle={{ paddingBottom: '14px' }}
+                      wrapperStyle={{ paddingBottom: '14px', color: chartTickColor() }}
                     />
 
                     {chartConfig.bars.map((bar) => (
@@ -483,8 +387,10 @@ export function ReportsPage() {
                         key={bar.key}
                         dataKey={bar.key}
                         name={bar.name}
-                        fill={bar.color}
+                        fill={bar.gradient ? fillFor(bar.gradient) : bar.color}
                         radius={[5, 5, 0, 0]}
+                        isAnimationActive
+                        animationDuration={900}
                       />
                     ))}
                   </BarChart>
@@ -494,16 +400,11 @@ export function ReportsPage() {
           ) : null}
 
           <section className="card overflow-hidden">
-            <div className="flex flex-col gap-1 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="font-bold text-slate-900">
-                {selectedReport.name}
-              </h2>
-
-              <span className="text-sm text-slate-500">
+            <div className="flex flex-col gap-1 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="font-bold text-fg">{selectedReport.name}</h2>
+              <span className="text-sm text-muted">
                 {query.data?.rows.length ?? 0}{' '}
-                {(query.data?.rows.length ?? 0) === 1
-                  ? 'record'
-                  : 'records'}
+                {(query.data?.rows.length ?? 0) === 1 ? 'record' : 'records'}
               </span>
             </div>
 

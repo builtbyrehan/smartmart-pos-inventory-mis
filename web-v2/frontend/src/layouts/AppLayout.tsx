@@ -25,6 +25,8 @@ import {
 } from 'react-router-dom'
 
 import { useAuth } from '../auth/AuthContext'
+import { PageTransition } from '../components/PageTransition'
+import { ThemeToggle } from '../components/ui'
 import type { Role } from '../types'
 
 const all: Role[] = [
@@ -47,20 +49,13 @@ export const nav = [
     to: '/pos',
     label: 'Point of Sale',
     icon: ShoppingCart,
-    roles: [
-      'Admin',
-      'Cashier',
-      'Sales Executive',
-    ] as Role[],
+    roles: ['Admin', 'Cashier', 'Sales Executive'] as Role[],
   },
   {
     to: '/purchases/new',
     label: 'New Purchase',
     icon: PackagePlus,
-    roles: [
-      'Admin',
-      'Purchase Officer',
-    ] as Role[],
+    roles: ['Admin', 'Purchase Officer'] as Role[],
   },
   {
     to: '/products',
@@ -72,51 +67,31 @@ export const nav = [
     to: '/categories',
     label: 'Categories',
     icon: FolderTree,
-    roles: [
-      'Admin',
-      'Inventory Officer',
-    ] as Role[],
+    roles: ['Admin', 'Inventory Officer'] as Role[],
   },
   {
     to: '/customers',
     label: 'Customers',
     icon: Users,
-    roles: [
-      'Admin',
-      'Cashier',
-      'Sales Executive',
-    ] as Role[],
+    roles: ['Admin', 'Cashier', 'Sales Executive'] as Role[],
   },
   {
     to: '/suppliers',
     label: 'Suppliers',
     icon: Truck,
-    roles: [
-      'Admin',
-      'Inventory Officer',
-      'Purchase Officer',
-    ] as Role[],
+    roles: ['Admin', 'Inventory Officer', 'Purchase Officer'] as Role[],
   },
   {
     to: '/sales',
     label: 'Sales History',
     icon: ReceiptText,
-    roles: [
-      'Admin',
-      'Manager',
-      'Cashier',
-      'Sales Executive',
-    ] as Role[],
+    roles: ['Admin', 'Manager', 'Cashier', 'Sales Executive'] as Role[],
   },
   {
     to: '/purchases',
     label: 'Purchase History',
     icon: ClipboardList,
-    roles: [
-      'Admin',
-      'Manager',
-      'Purchase Officer',
-    ] as Role[],
+    roles: ['Admin', 'Manager', 'Purchase Officer'] as Role[],
   },
   {
     to: '/reports',
@@ -150,8 +125,7 @@ export function AppLayout() {
   const [collapsed, setCollapsed] = useState(false)
 
   const links = nav.filter(
-    (item) =>
-      user && item.roles.includes(user.role),
+    (item) => user && item.roles.includes(user.role),
   )
 
   useEffect(() => {
@@ -159,9 +133,7 @@ export function AppLayout() {
       return
     }
 
-    const previousOverflow =
-      document.body.style.overflow
-
+    const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -174,24 +146,24 @@ export function AppLayout() {
 
     return () => {
       document.body.style.overflow = previousOverflow
-      window.removeEventListener(
-        'keydown',
-        closeOnEscape,
-      )
+      window.removeEventListener('keydown', closeOnEscape)
     }
   }, [open])
 
-  const closeMobileNavigation = () => {
-    setOpen(false)
-  }
+  const closeMobileNavigation = () => setOpen(false)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="relative min-h-screen">
+      {/* Ambient background */}
+      <div className="app-orb app-orb-one" aria-hidden="true" />
+      <div className="app-orb app-orb-two" aria-hidden="true" />
+      <div className="app-orb app-orb-three" aria-hidden="true" />
+
       {open ? (
         <button
           type="button"
           aria-label="Close navigation"
-          className="sidebar-backdrop fixed inset-0 z-30 bg-slate-950/50 backdrop-blur-[2px] lg:hidden"
+          className="sidebar-backdrop fixed inset-0 z-30 bg-bg/70 backdrop-blur-sm lg:hidden"
           onClick={closeMobileNavigation}
         />
       ) : null}
@@ -200,43 +172,30 @@ export function AppLayout() {
         id="app-sidebar"
         className={[
           'sidebar-surface fixed inset-y-0 left-0 z-40',
-          'flex w-[min(18rem,calc(100vw-2rem))] flex-col overflow-hidden',
-          'rounded-r-3xl border-r border-white/10 bg-slate-950 text-white',
+          'flex flex-col overflow-hidden',
+          'w-[min(18rem,calc(100vw-2rem))]',
+          'border-r border-border bg-card text-fg',
           'transition-[width,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
-          'lg:translate-x-0 lg:rounded-none',
-          collapsed ? 'lg:w-20' : 'lg:w-72',
-          open
-            ? 'translate-x-0'
-            : '-translate-x-full',
+          'lg:translate-x-0',
+          collapsed ? 'lg:w-[4.5rem]' : 'lg:w-64',
+          open ? 'translate-x-0' : '-translate-x-full',
         ].join(' ')}
       >
         <div
           className={[
-            'flex h-20 shrink-0 items-center gap-3',
-            'border-b border-white/10 px-5',
-            collapsed
-              ? 'lg:justify-center lg:px-3'
-              : '',
+            'flex h-16 shrink-0 items-center gap-3 border-b border-border px-4',
+            collapsed ? 'lg:justify-center lg:px-3' : '',
           ].join(' ')}
         >
-          <div className="sidebar-brand-icon grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-600 shadow-lg shadow-brand-950/30">
-            <Store
-              className="h-6 w-6"
-              aria-hidden="true"
-            />
+          <div className="sidebar-brand-icon grid h-9 w-9 shrink-0 place-items-center rounded-lg">
+            <Store className="h-4.5 w-4.5" aria-hidden="true" />
           </div>
 
-          <div
-            className={[
-              'min-w-0',
-              collapsed ? 'lg:hidden' : '',
-            ].join(' ')}
-          >
-            <p className="truncate font-bold tracking-tight">
+          <div className={['min-w-0', collapsed ? 'lg:hidden' : ''].join(' ')}>
+            <p className="truncate text-sm font-bold tracking-tight text-fg">
               POS &amp; Inventory
             </p>
-
-            <p className="truncate text-xs text-slate-400">
+            <p className="truncate text-xs text-muted">
               Management System
             </p>
           </div>
@@ -244,20 +203,16 @@ export function AppLayout() {
           <button
             type="button"
             aria-label="Close navigation"
-            className="ml-auto grid min-h-11 min-w-11 place-items-center rounded-xl text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 lg:hidden"
+            className="ml-auto grid min-h-9 min-w-9 place-items-center rounded-lg text-muted transition hover:bg-card-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 lg:hidden"
             onClick={closeMobileNavigation}
           >
-            <X
-              className="h-5 w-5"
-              aria-hidden="true"
-            />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
         <nav
           className={[
-            'sidebar-scrollbar flex-1 overflow-y-auto overflow-x-hidden',
-            'px-4 py-5',
+            'flex-1 overflow-y-auto overflow-x-hidden px-4 py-5',
             collapsed ? 'lg:px-2' : '',
           ].join(' ')}
           aria-label="Primary navigation"
@@ -272,93 +227,76 @@ export function AppLayout() {
           </p>
 
           <div className="space-y-1">
-            {links.map(
-              ({
-                to,
-                label,
-                icon: Icon,
-              }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={to === '/'}
-                  title={
-                    collapsed ? label : undefined
-                  }
-                  onClick={closeMobileNavigation}
-                  className={({ isActive }) =>
-                    [
-                      'sidebar-nav-item group relative',
-                      'flex min-h-11 items-center gap-3 overflow-hidden',
-                      'rounded-xl px-3 py-2.5',
-                      'text-sm font-medium',
-                      'focus-visible:outline-none focus-visible:ring-2',
-                      'focus-visible:ring-brand-400 focus-visible:ring-offset-2',
-                      'focus-visible:ring-offset-slate-950',
-                      collapsed
-                        ? 'lg:justify-center lg:px-2'
-                        : '',
-                      isActive
-                        ? 'sidebar-nav-active text-white'
-                        : 'text-slate-300 hover:bg-white/[0.07] hover:text-white',
-                    ].join(' ')
-                  }
+            {links.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === '/'}
+                title={collapsed ? label : undefined}
+                onClick={closeMobileNavigation}
+                className={({ isActive }) => [
+                  'sidebar-nav-item group relative',
+                  'flex min-h-10 items-center gap-3 overflow-hidden rounded-lg px-3 py-2',
+                  'text-sm font-medium',
+                  'focus-visible:outline-none focus-visible:ring-2',
+                  'focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+                  'focus-visible:ring-offset-card',
+                  collapsed ? 'lg:justify-center lg:px-2' : '',
+                  isActive
+                    ? 'sidebar-nav-active'
+                    : 'text-muted hover:bg-card-2 hover:text-fg',
+                ].join(' ')}
+              >
+                <Icon
+                  className="sidebar-nav-icon h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                />
+
+                <span
+                  className={[
+                    'min-w-0 flex-1 truncate',
+                    collapsed ? 'lg:hidden' : '',
+                  ].join(' ')}
                 >
-                  <Icon
-                    className="sidebar-nav-icon h-5 w-5 shrink-0"
-                    aria-hidden="true"
-                  />
+                  {label}
+                </span>
 
-                  <span
-                    className={[
-                      'min-w-0 flex-1 truncate',
-                      collapsed ? 'lg:hidden' : '',
-                    ].join(' ')}
-                  >
-                    {label}
-                  </span>
-
-                  <ChevronRight
-                    className={[
-                      'sidebar-nav-chevron ml-auto h-4 w-4 shrink-0 opacity-50',
-                      collapsed ? 'lg:hidden' : '',
-                    ].join(' ')}
-                    aria-hidden="true"
-                  />
-                </NavLink>
-              ),
-            )}
+                <ChevronRight
+                  className={[
+                    'sidebar-nav-chevron ml-auto h-4 w-4 shrink-0 opacity-50',
+                    collapsed ? 'lg:hidden' : '',
+                  ].join(' ')}
+                  aria-hidden="true"
+                />
+              </NavLink>
+            ))}
           </div>
         </nav>
 
-        <div className="sidebar-footer shrink-0 border-t border-white/10 bg-slate-950/95 p-4 backdrop-blur">
+        <div className="sidebar-footer shrink-0 border-t border-border bg-card-2 p-4">
           <div
             className={[
-              'mb-3 rounded-xl border border-white/[0.06] bg-white/[0.05] p-3',
+              'mb-3 rounded-lg border border-border bg-card p-3',
               collapsed
-                ? 'lg:grid lg:h-11 lg:w-11 lg:place-items-center lg:p-0'
+                ? 'lg:grid lg:h-10 lg:w-10 lg:place-items-center lg:p-0'
                 : '',
             ].join(' ')}
           >
             <div
               className={[
-                'flex min-w-0 items-center gap-3',
+                'flex min-w-0 items-center gap-2.5',
                 collapsed ? 'lg:hidden' : '',
               ].join(' ')}
             >
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-600/20 text-brand-100">
-                <UserRound
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                />
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent-soft">
+                <UserRound className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
               </div>
 
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">
+                <p className="truncate text-sm font-semibold text-fg">
                   {user?.full_name}
                 </p>
-
-                <p className="mt-0.5 truncate text-xs text-brand-100">
+                <p className="mt-0.5 truncate text-xs text-muted">
                   {user?.role}
                 </p>
               </div>
@@ -366,7 +304,7 @@ export function AppLayout() {
 
             {collapsed ? (
               <UserRound
-                className="hidden h-5 w-5 text-brand-100 lg:block"
+                className="hidden h-4 w-4 text-muted lg:block"
                 aria-hidden="true"
               />
             ) : null}
@@ -376,108 +314,74 @@ export function AppLayout() {
             type="button"
             title="Sign out"
             className={[
-              'sidebar-signout flex min-h-11 w-full items-center gap-3',
-              'rounded-xl px-3 py-2 text-sm text-slate-300',
-              'transition-colors hover:bg-red-500/10 hover:text-red-200',
+              'sidebar-signout flex min-h-10 w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted',
+              'transition-colors hover:bg-danger-soft hover:text-danger',
               'focus-visible:outline-none focus-visible:ring-2',
-              'focus-visible:ring-red-400 focus-visible:ring-offset-2',
-              'focus-visible:ring-offset-slate-950',
-              collapsed
-                ? 'lg:justify-center lg:px-2'
-                : '',
+              'focus-visible:ring-danger focus-visible:ring-offset-2',
+              'focus-visible:ring-offset-card',
+              collapsed ? 'lg:justify-center lg:px-2' : '',
             ].join(' ')}
             onClick={() => logout()}
           >
-            <LogOut
-              className="h-4 w-4 shrink-0"
-              aria-hidden="true"
-            />
-
-            <span
-              className={
-                collapsed ? 'lg:hidden' : ''
-              }
-            >
-              Sign out
-            </span>
+            <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className={collapsed ? 'lg:hidden' : ''}>Sign out</span>
           </button>
         </div>
       </aside>
 
       <div
         className={[
-          'transition-[padding] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
-          collapsed
-            ? 'lg:pl-20'
-            : 'lg:pl-72',
+          'relative z-10 transition-[padding] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
+          collapsed ? 'lg:pl-[4.5rem]' : 'lg:pl-64',
         ].join(' ')}
       >
-        <header className="no-print sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/85 px-4 shadow-sm shadow-slate-950/[0.02] backdrop-blur-xl lg:px-8">
+        <header className="no-print sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-bg/80 px-4 backdrop-blur-xl lg:px-8">
           <button
             type="button"
             aria-label="Open navigation"
             aria-controls="app-sidebar"
             aria-expanded={open}
-            className="grid min-h-11 min-w-11 place-items-center rounded-xl text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 lg:hidden"
+            className="grid min-h-11 min-w-11 place-items-center rounded-xl text-muted transition hover:bg-card-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 lg:hidden"
             onClick={() => setOpen(true)}
           >
-            <Menu
-              className="h-5 w-5"
-              aria-hidden="true"
-            />
+            <Menu className="h-5 w-5" aria-hidden="true" />
           </button>
 
           <button
             type="button"
-            aria-label={
-              collapsed
-                ? 'Expand sidebar'
-                : 'Collapse sidebar'
-            }
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             aria-controls="app-sidebar"
             aria-expanded={!collapsed}
-            className="hidden min-h-11 min-w-11 place-items-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 lg:grid"
-            onClick={() =>
-              setCollapsed(
-                (current) => !current,
-              )
-            }
+            className="hidden min-h-11 min-w-11 place-items-center rounded-xl text-muted transition hover:bg-card-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 lg:grid"
+            onClick={() => setCollapsed((current) => !current)}
           >
             {collapsed ? (
-              <PanelLeftOpen
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
+              <PanelLeftOpen className="h-5 w-5" aria-hidden="true" />
             ) : (
-              <PanelLeftClose
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
+              <PanelLeftClose className="h-5 w-5" aria-hidden="true" />
             )}
           </button>
 
           <div className="ml-auto flex items-center gap-3">
-            <div className="hidden h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700 sm:grid">
-              <UserRound
-                className="h-4 w-4"
-                aria-hidden="true"
-              />
+            <ThemeToggle />
+
+            <div className="hidden h-9 w-9 place-items-center rounded-xl bg-accent-soft text-brand-300 sm:grid">
+              <UserRound className="h-4 w-4" aria-hidden="true" />
             </div>
 
             <div className="text-right">
-              <p className="max-w-48 truncate text-sm font-semibold text-slate-800">
+              <p className="max-w-48 truncate text-sm font-semibold text-fg">
                 {user?.full_name}
               </p>
-
-              <p className="text-xs text-slate-500">
-                {user?.role}
-              </p>
+              <p className="text-xs text-muted">{user?.role}</p>
             </div>
           </div>
         </header>
 
-        <main className="mx-auto max-w-[1500px] p-4 md:p-6 lg:p-8">
-          <Outlet />
+        <main className="mx-auto max-w-[1440px] p-6 md:p-8 lg:p-10">
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </main>
       </div>
     </div>

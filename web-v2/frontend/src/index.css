@@ -1,327 +1,719 @@
 @import "tailwindcss";
 
-@theme {
-  --color-brand-50: #f0fdfa;
-  --color-brand-100: #ccfbf1;
-  --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;
-  --color-brand-700: #0f766e;
-  --color-brand-800: #115e59;
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+/* =========================================================================
+   POS & Inventory MIS — Design System
+   "Charcoal & Chartreuse" — bold, confident, not a SaaS template.
+   Theme is toggled by adding .dark or .light on <html>.
+   ========================================================================= */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* -------------------------------------------------------------------------
+   1. Design tokens
+   ------------------------------------------------------------------------- */
+:root,
+.dark {
+  color-scheme: dark;
+
+  /* Page & surface backgrounds */
+  --color-bg:          #121212;
+  --color-bg-soft:     #121212;
+  --color-bg-elevated: #1A1A1A;
+
+  /* Card / panel surfaces */
+  --color-card:       #1A1A1A;
+  --color-card-solid: #1A1A1A;
+  --color-card-2:     #212121;
+  --color-card-hover: #282828;
+
+  /* Borders / dividers */
+  --color-border:        #2C2C2C;
+  --color-border-soft:   #252525;
+  --color-border-strong: #3A3A3A;
+
+  /* Text hierarchy */
+  --color-fg:      #F2F2ED;
+  --color-muted:   #A3A39C;
+  --color-faint:   #6A6A65;
+  --color-inverse: #121212;
+
+  /* Chartreuse accent — only accent, used sparingly */
+  --color-brand-50:  #F6FFD1;
+  --color-brand-100: #EAFF99;
+  --color-brand-200: #D4FF33;
+  --color-brand-300: #C6FF00;
+  --color-brand-400: #C6FF00;
+  --color-brand-500: #C6FF00;
+  --color-brand-600: #A8D400;
+  --color-brand-700: #8FB300;
+  --color-brand-800: #6A8500;
+  --color-brand-900: #445500;
+  --color-brand-950: #223300;
+
+  --color-accent:      #C6FF00;
+  --color-accent-soft: rgba(198, 255, 0, 0.12);
+
+  /* Status — no additional saturated colors except danger red */
+  --color-success:      #2FE86A;
+  --color-success-soft: rgba(47, 232, 106, 0.12);
+  --color-warning:      #C6FF00;
+  --color-warning-soft: rgba(198, 255, 0, 0.12);
+  --color-danger:       #FF4569;
+  --color-danger-soft:  rgba(255, 69, 105, 0.14);
+  --color-info:         #C6FF00;
+  --color-info-soft:    rgba(198, 255, 0, 0.12);
+
+  /* Shadows */
+  --shadow-card:        0 1px 3px rgba(0,0,0,0.4), 0 8px 24px -8px rgba(0,0,0,0.5);
+  --shadow-glow-brand:  0 0 0 1px rgba(198,255,0,0.25), 0 6px 20px -4px rgba(198,255,0,0.3);
+  --shadow-glow-accent: 0 0 0 1px rgba(198,255,0,0.25), 0 6px 20px -4px rgba(198,255,0,0.3);
 }
 
+/* ---- Light Mode ---- */
+.light {
+  color-scheme: light;
+
+  --color-bg:          #F2F2ED;
+  --color-bg-soft:     #F2F2ED;
+  --color-bg-elevated: #FFFFFF;
+
+  --color-card:       #FFFFFF;
+  --color-card-solid: #FFFFFF;
+  --color-card-2:     #F7F7F2;
+  --color-card-hover: #EDEDE6;
+
+  --color-border:        #DEDED5;
+  --color-border-soft:   #E8E8E0;
+  --color-border-strong: #C8C8BE;
+
+  --color-fg:      #1A1A1A;
+  --color-muted:   #5C5C57;
+  --color-faint:   #8A8A82;
+  --color-inverse: #FFFFFF;
+
+  --color-brand-500: #A8D400;
+  --color-brand-600: #8FB300;
+  --color-brand-700: #728F00;
+
+  --color-accent:      #A8D400;
+  --color-accent-soft: rgba(168, 212, 0, 0.12);
+
+  --color-success:      #00C853;
+  --color-success-soft: rgba(0, 200, 83, 0.10);
+  --color-warning:      #A8D400;
+  --color-warning-soft: rgba(168, 212, 0, 0.12);
+  --color-danger:       #FF1744;
+  --color-danger-soft:  rgba(255, 23, 68, 0.10);
+  --color-info:         #A8D400;
+  --color-info-soft:    rgba(168, 212, 0, 0.12);
+
+  --shadow-card:        0 1px 2px rgba(0,0,0,0.04), 0 4px 16px -6px rgba(0,0,0,0.08);
+  --shadow-glow-brand:  0 0 0 1px rgba(168,212,0,0.3), 0 4px 16px -4px rgba(168,212,0,0.25);
+  --shadow-glow-accent: 0 0 0 1px rgba(168,212,0,0.3), 0 4px 16px -4px rgba(168,212,0,0.25);
+}
+
+/* -------------------------------------------------------------------------
+   2. Map tokens to Tailwind utilities
+   ------------------------------------------------------------------------- */
+@theme inline {
+  --color-bg:          var(--color-bg);
+  --color-bg-soft:     var(--color-bg-soft);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-card:        var(--color-card);
+  --color-card-solid:  var(--color-card-solid);
+  --color-card-2:      var(--color-card-2);
+
+  --color-border:        var(--color-border);
+  --color-border-soft:   var(--color-border-soft);
+  --color-border-strong: var(--color-border-strong);
+
+  --color-fg:      var(--color-fg);
+  --color-muted:   var(--color-muted);
+  --color-faint:   var(--color-faint);
+  --color-inverse: var(--color-inverse);
+
+  --color-brand-50:  var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
+  --color-brand-950: var(--color-brand-950);
+
+  --color-accent:      var(--color-accent);
+  --color-success:     var(--color-success);
+  --color-warning:     var(--color-warning);
+  --color-danger:      var(--color-danger);
+  --color-info:        var(--color-info);
+
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* -------------------------------------------------------------------------
+   3. Base layer
+   ------------------------------------------------------------------------- */
 @layer base {
   * { box-sizing: border-box; }
-  body { margin: 0; min-width: 320px; min-height: 100vh; background: #f8fafc; color: #172033; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 350ms ease, color 250ms ease;
+  }
+
   button, input, select, textarea { font: inherit; }
   button { cursor: pointer; }
+
+  ::selection {
+    background: rgba(198, 255, 0, 0.28);
+    color: #1A1A1A;
+  }
+
+  /* Scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(198, 255, 0, 0.18) transparent;
+  }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    min-height: 40px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgba(180, 180, 170, 0.22);
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(198, 255, 0, 0.32);
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-button { display: none; }
 }
 
+/* -------------------------------------------------------------------------
+   4. Component primitives
+   ------------------------------------------------------------------------- */
 @layer components {
-  .card { @apply rounded-2xl border border-slate-200 bg-white shadow-sm; }
-  .btn { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-primary { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-secondary { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-danger { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50; }
-  .input { @apply min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-600 focus:ring-3 focus:ring-brand-100; }
-  .label { @apply mb-1.5 block text-sm font-semibold text-slate-700; }
-  .page-title { @apply text-2xl font-bold tracking-tight text-slate-950 md:text-3xl; }
-  .badge { @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold; }
+
+  /* Card — solid surface, no glass blur */
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    position: relative;
+  }
+
+  .card-quiet {
+    background: var(--color-card-2);
+    border: 1px solid var(--color-border-soft);
+    border-radius: 0.875rem;
+  }
+
+  /* ---- Buttons ---- */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.625rem;
+    border-radius: 0.625rem;
+    padding: 0.5rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition:
+      transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 160ms ease,
+      color 160ms ease,
+      box-shadow 200ms ease,
+      border-color 160ms ease;
+  }
+
+  .btn:disabled,
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-ghost:disabled,
+  .btn-danger:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  /* Primary — chartreuse with dark ink text */
+  .btn-primary {
+    color: #1A1A1A;
+    background: var(--color-brand-500);
+    box-shadow: 0 6px 20px -8px rgba(198,255,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:not(:disabled):hover {
+    background: var(--color-brand-300);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px -8px rgba(198,255,0,0.6);
+  }
+
+  .btn-primary:not(:disabled):active {
+    transform: translateY(0);
+    background: var(--color-brand-600);
+  }
+
+  /* Secondary — neutral bordered */
+  .btn-secondary {
+    background: var(--color-card-2);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-fg);
+  }
+
+  .btn-secondary:not(:disabled):hover {
+    background: var(--color-card-hover);
+    border-color: var(--color-brand-500);
+    transform: translateY(-1px);
+  }
+
+  /* Ghost */
+  .btn-ghost {
+    color: var(--color-muted);
+  }
+
+  .btn-ghost:not(:disabled):hover {
+    background: var(--color-accent-soft);
+    color: var(--color-fg);
+  }
+
+  /* Danger — reserved for destructive actions */
+  .btn-danger {
+    color: #fff;
+    background: var(--color-danger);
+    box-shadow: 0 6px 20px -8px rgba(255,23,68,0.45);
+  }
+
+  .btn-danger:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px -8px rgba(255,23,68,0.6);
+  }
+
+  /* ---- Inputs ---- */
+  .input {
+    @apply min-h-11 w-full rounded-xl px-3.5 py-2.5 text-sm;
+    background: var(--color-card-2);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-fg);
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 200ms ease;
+  }
+
+  .input::placeholder { color: var(--color-faint); }
+
+  .input:hover { border-color: var(--color-muted); }
+
+  .input:focus {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 3px rgba(198, 255, 0, 0.15);
+  }
+
+  .dark .input:focus {
+    box-shadow: 0 0 0 3px rgba(198, 255, 0, 0.12);
+  }
+
+  select.input option {
+    background: var(--color-card-solid);
+    color: var(--color-fg);
+  }
+
+  .label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-wider;
+    color: var(--color-faint);
+  }
+
+  .page-title {
+    @apply text-2xl font-bold tracking-tight md:text-3xl;
+    color: var(--color-fg);
+  }
+
+  /* ---- Badges ---- */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+    border: 1px solid transparent;
+  }
+
+  .badge-neutral {
+    background: var(--color-card-2);
+    border-color: var(--color-border-strong);
+    color: var(--color-muted);
+  }
+
+  /* In-stock badge — vivid green, works both modes */
+  .badge-success {
+    background: var(--color-success-soft);
+    border-color: rgba(47, 232, 106, 0.25);
+    color: var(--color-success);
+  }
+
+  /* Low-stock / warning — chartreuse accent */
+  /* On light mode: dark pill bg so chartreuse text is readable */
+  .badge-warning {
+    background: var(--color-warning-soft);
+    border-color: rgba(198, 255, 0, 0.25);
+    color: var(--color-warning);
+  }
+
+  .light .badge-warning {
+    background: #1A1A1A;
+    border-color: transparent;
+    color: #C6FF00;
+  }
+
+  /* Out-of-stock / danger */
+  .badge-danger {
+    background: var(--color-danger-soft);
+    border-color: rgba(255, 23, 68, 0.25);
+    color: var(--color-danger);
+  }
+
+  /* Info (reuses accent chartreuse) */
+  .badge-info {
+    background: var(--color-accent-soft);
+    border-color: rgba(198, 255, 0, 0.2);
+    color: var(--color-accent);
+  }
+
+  .light .badge-info {
+    background: #1A1A1A;
+    border-color: transparent;
+    color: #C6FF00;
+  }
+
+  /* Brand */
+  .badge-brand {
+    background: var(--color-accent-soft);
+    border-color: rgba(198, 255, 0, 0.25);
+    color: var(--color-accent);
+  }
+
+  /* ---- Icon chip ---- */
+  .icon-chip {
+    @apply grid place-items-center rounded-xl;
+    position: relative;
+  }
+
+  /* ---- Gradient text (chartreuse tone) ---- */
+  .text-gradient {
+    background: linear-gradient(120deg, var(--color-brand-300), var(--color-brand-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--color-border);
+  }
 }
 
-@media print {
-  .no-print, aside, header { display: none !important; }
-  main { padding: 0 !important; }
-  body { background: white; }
+/* -------------------------------------------------------------------------
+   5. Animation library
+   ------------------------------------------------------------------------- */
+
+.page-enter {
+  animation: page-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-/* Login experience */
+.stagger > * {
+  opacity: 0;
+  animation: reveal-in 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger > *:nth-child(1) { animation-delay: 40ms; }
+.stagger > *:nth-child(2) { animation-delay: 90ms; }
+.stagger > *:nth-child(3) { animation-delay: 140ms; }
+.stagger > *:nth-child(4) { animation-delay: 190ms; }
+.stagger > *:nth-child(5) { animation-delay: 240ms; }
+.stagger > *:nth-child(6) { animation-delay: 290ms; }
+.stagger > *:nth-child(7) { animation-delay: 340ms; }
+.stagger > *:nth-child(8) { animation-delay: 390ms; }
+.stagger > *:nth-child(n+9) { animation-delay: 440ms; }
+
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.988); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.reveal {
+  opacity: 0;
+  animation: reveal-in 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lift {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 280ms ease;
+}
+
+.lift:hover { transform: translateY(-2px); }
+
+.glow-brand  { box-shadow: var(--shadow-glow-brand); }
+.glow-accent { box-shadow: var(--shadow-glow-accent); }
+
+.modal-enter {
+  animation: modal-enter 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.backdrop-enter {
+  animation: backdrop-enter 200ms ease-out both;
+}
+
+@keyframes backdrop-enter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--color-card-2) 32%,
+    rgba(200, 200, 190, 0.10) 50%,
+    var(--color-card-2) 68%
+  );
+  background-size: 240% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 140% 0; }
+  100% { background-position: -140% 0; }
+}
+
+.spin-soft {
+  animation: spin-soft 1.1s linear infinite;
+}
+
+@keyframes spin-soft {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================================================
+   6. App ambient background — remove old colourful orbs; use subtle vignette
+   ========================================================================= */
+.app-orb {
+  position: fixed;
+  z-index: 0;
+  border-radius: 999px;
+  filter: blur(120px);
+  opacity: 0.25;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Single subtle chartreuse orb, top-left only */
+.app-orb-one {
+  width: 42rem;
+  height: 42rem;
+  top: -18rem;
+  left: -14rem;
+  background: radial-gradient(circle at 30% 30%, #C6FF00, transparent 65%);
+  animation: orb-float-a 28s ease-in-out infinite;
+  opacity: 0.12;
+}
+
+/* Minimal dark secondary — barely visible */
+.app-orb-two {
+  width: 30rem;
+  height: 30rem;
+  right: -12rem;
+  bottom: -14rem;
+  background: radial-gradient(circle at 70% 70%, #3A3A3A, transparent 70%);
+  animation: orb-float-b 32s ease-in-out infinite;
+  opacity: 0.30;
+}
+
+/* Third orb hidden completely — keep DOM element but invisible */
+.app-orb-three {
+  display: none;
+}
+
+@keyframes orb-float-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%       { transform: translate3d(28px, 20px, 0) scale(1.06); }
+}
+
+@keyframes orb-float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%       { transform: translate3d(-24px, -18px, 0) scale(1.05); }
+}
+
+/* =========================================================================
+   7. Login page
+   ========================================================================= */
 .login-shell {
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(45, 212, 191, 0.24),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 88% 82%,
-      rgba(59, 130, 246, 0.16),
-      transparent 30%
-    ),
-    linear-gradient(135deg, #f0fdfa 0%, #f8fafc 48%, #eef2ff 100%);
+  position: relative;
+  background: var(--color-bg);
 }
 
 .login-grid {
-  opacity: 0.38;
+  opacity: 0.22;
   background-image:
-    linear-gradient(
-      rgba(15, 118, 110, 0.06) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(15, 118, 110, 0.06) 1px,
-      transparent 1px
-    );
-  background-size: 34px 34px;
-  -webkit-mask-image:
-    linear-gradient(to bottom, black, transparent 88%);
-  mask-image:
-    linear-gradient(to bottom, black, transparent 88%);
-}
-
-.login-card {
-  box-shadow:
-    0 32px 80px rgba(15, 23, 42, 0.14),
-    0 8px 24px rgba(15, 23, 42, 0.08);
+    linear-gradient(rgba(198, 255, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 255, 0, 0.06) 1px, transparent 1px);
+  background-size: 36px 36px;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 86%);
+  mask-image: linear-gradient(to bottom, black, transparent 86%);
 }
 
 .login-orb {
   width: 22rem;
   height: 22rem;
-  filter: blur(64px);
-  opacity: 0.28;
+  filter: blur(80px);
+  opacity: 0.22;
   will-change: transform;
-  animation: login-orb-float 14s ease-in-out infinite;
+  animation: login-orb-float 16s ease-in-out infinite;
 }
 
 .login-orb-one {
   top: -10rem;
   left: -8rem;
-  background: #2dd4bf;
+  background: #C6FF00;
 }
 
 .login-orb-two {
   right: -9rem;
   bottom: -11rem;
-  background: #60a5fa;
-  animation-delay: -7s;
+  background: #4A4A4A;
+  animation-delay: -8s;
+}
+
+.login-card {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .login-card-enter {
-  animation:
-    login-card-in 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: login-card-in 580ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .login-brand-enter {
-  animation:
-    login-content-in 700ms 120ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: login-content-in 620ms 100ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .login-form-panel > div {
-  animation:
-    login-content-in 700ms 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: login-content-in 620ms 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .login-logo {
-  animation:
-    login-logo-in 750ms 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: login-logo-in 680ms 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .login-feature {
   opacity: 0;
-  animation:
-    login-feature-in 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: login-feature-in 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-feature:nth-child(1) {
-  animation-delay: 260ms;
-}
-
-.login-feature:nth-child(2) {
-  animation-delay: 340ms;
-}
-
-.login-feature:nth-child(3) {
-  animation-delay: 420ms;
-}
+.login-feature:nth-child(1) { animation-delay: 240ms; }
+.login-feature:nth-child(2) { animation-delay: 310ms; }
+.login-feature:nth-child(3) { animation-delay: 380ms; }
 
 .login-alert {
-  animation:
-    login-alert-in 240ms ease-out both;
-}
-
-.login-submit {
-  isolation: isolate;
-  box-shadow:
-    0 10px 24px rgba(15, 118, 110, 0.2);
-}
-
-.login-submit::after {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  content: "";
-  background:
-    linear-gradient(
-      105deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.22) 48%,
-      transparent 66%
-    );
-  transform: translateX(-140%);
-  transition: transform 700ms ease;
-}
-
-.login-submit:hover::after {
-  transform: translateX(140%);
-}
-
-.login-submit:not(:disabled):hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 14px 30px rgba(15, 118, 110, 0.26);
-}
-
-.login-submit:not(:disabled):active {
-  transform: translateY(0);
+  animation: login-alert-in 200ms ease-out both;
 }
 
 @keyframes login-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.985);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(20px) scale(0.988); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes login-content-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes login-logo-in {
-  from {
-    opacity: 0;
-    transform: scale(0.72) rotate(-8deg);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) rotate(0);
-  }
+  from { opacity: 0; transform: scale(0.78) rotate(-6deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 @keyframes login-feature-in {
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes login-alert-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes login-orb-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(20px, -14px, 0) scale(1.06);
-  }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%       { transform: translate3d(16px, -12px, 0) scale(1.05); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .login-orb,
-  .login-card-enter,
-  .login-brand-enter,
-  .login-form-panel > div,
-  .login-logo,
-  .login-feature,
-  .login-alert {
-    animation: none !important;
-  }
-
-  .login-feature {
-    opacity: 1;
-  }
-
-  .login-submit,
-  .login-submit::after {
-    transition: none !important;
-  }
-
-  .login-submit::after {
-    display: none;
-  }
-}
-
-
-/* Application sidebar */
+/* =========================================================================
+   8. Sidebar — clean charcoal, chartreuse active state
+   ========================================================================= */
 .sidebar-surface {
-  box-shadow:
-    16px 0 48px rgba(2, 6, 23, 0.16),
-    4px 0 16px rgba(2, 6, 23, 0.08);
+  box-shadow: 1px 0 0 var(--color-border);
   will-change: width, transform;
 }
 
 .sidebar-backdrop {
-  animation:
-    sidebar-backdrop-in 220ms ease-out both;
+  animation: sidebar-backdrop-in 200ms ease-out both;
 }
 
+@keyframes sidebar-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Brand icon — chartreuse fill, dark text */
 .sidebar-brand-icon {
-  transition:
-    transform 240ms ease,
-    box-shadow 240ms ease;
+  background: var(--color-brand-500);
+  color: #1A1A1A;
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .sidebar-brand-icon:hover {
-  transform: translateY(-1px) rotate(-2deg);
-  box-shadow:
-    0 12px 24px rgba(13, 148, 136, 0.28);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow-brand);
 }
 
 .sidebar-nav-item {
-  transition:
-    color 180ms ease,
-    background-color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
+  transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
 }
 
 .sidebar-nav-item:not(.sidebar-nav-active):hover {
   transform: translateX(2px);
 }
 
+/* Active state: chartreuse left-border indicator, subtle bg */
 .sidebar-nav-active {
-  background:
-    linear-gradient(
-      135deg,
-      #0d9488 0%,
-      #0f766e 100%
-    );
-  box-shadow:
-    0 10px 24px rgba(13, 148, 136, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  background: var(--color-accent-soft);
+  color: var(--color-accent) !important;
 }
 
 .sidebar-nav-active::before {
@@ -329,25 +721,21 @@
   top: 50%;
   left: 0;
   width: 3px;
-  height: 55%;
+  height: 60%;
   content: "";
   border-radius: 0 999px 999px 0;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow:
-    0 0 12px rgba(255, 255, 255, 0.45);
+  background: var(--color-accent);
   transform: translateY(-50%);
 }
 
 .sidebar-nav-icon,
 .sidebar-nav-chevron {
-  transition:
-    transform 180ms ease,
-    opacity 180ms ease;
+  transition: transform 150ms ease, opacity 150ms ease;
 }
 
 .sidebar-nav-item:hover .sidebar-nav-icon,
 .sidebar-nav-active .sidebar-nav-icon {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .sidebar-nav-item:hover .sidebar-nav-chevron,
@@ -357,86 +745,83 @@
 }
 
 .sidebar-footer {
-  box-shadow:
-    0 -12px 30px rgba(2, 6, 23, 0.14);
+  box-shadow: 0 -1px 0 var(--color-border);
 }
 
 .sidebar-signout svg {
-  transition: transform 180ms ease;
+  transition: transform 150ms ease;
 }
 
 .sidebar-signout:hover svg {
   transform: translateX(2px);
 }
 
-/* Firefox scrollbar */
-.sidebar-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color:
-    rgba(148, 163, 184, 0.35)
-    transparent;
-}
-
-/* Chromium, Edge and Safari scrollbar */
-.sidebar-scrollbar::-webkit-scrollbar {
-  width: 7px;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-thumb {
-  min-height: 42px;
-  border: 2px solid transparent;
-  border-radius: 999px;
-  background:
-    rgba(148, 163, 184, 0.38);
-  background-clip: content-box;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background:
-    rgba(203, 213, 225, 0.58);
-  background-clip: content-box;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-button,
-.sidebar-scrollbar::-webkit-scrollbar-button:start,
-.sidebar-scrollbar::-webkit-scrollbar-button:end {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-@keyframes sidebar-backdrop-in {
-  from {
-    opacity: 0;
+/* =========================================================================
+   9. Print — invoices stay paper-white
+   ========================================================================= */
+@media print {
+  .no-print,
+  aside,
+  header,
+  .app-orb {
+    display: none !important;
   }
 
-  to {
-    opacity: 1;
-  }
-}
+  main { padding: 0 !important; }
 
-@media (prefers-reduced-motion: reduce) {
-  .sidebar-surface,
-  .sidebar-backdrop,
-  .sidebar-brand-icon,
-  .sidebar-nav-item,
-  .sidebar-nav-icon,
-  .sidebar-nav-chevron,
-  .sidebar-signout,
-  .sidebar-signout svg {
+  body {
+    background: white !important;
+    color: #1A1A1A !important;
+  }
+
+  .card {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
+  }
+
+  .page-enter,
+  .stagger > *,
+  .reveal {
     animation: none !important;
-    transition: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* =========================================================================
+   10. Reduced motion
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 
-  .sidebar-nav-item:not(.sidebar-nav-active):hover,
-  .sidebar-nav-item:hover .sidebar-nav-icon,
-  .sidebar-nav-active .sidebar-nav-icon,
-  .sidebar-nav-item:hover .sidebar-nav-chevron,
-  .sidebar-nav-active .sidebar-nav-chevron {
-    transform: none;
+  .app-orb,
+  .login-orb,
+  .page-enter,
+  .reveal,
+  .stagger > *,
+  .modal-enter,
+  .backdrop-enter,
+  .login-card-enter,
+  .login-brand-enter,
+  .login-form-panel > div,
+  .login-logo,
+  .login-feature,
+  .login-alert,
+  .sidebar-backdrop,
+  .skeleton,
+  .spin-soft {
+    animation: none !important;
+  }
+
+  .reveal,
+  .stagger > *,
+  .login-feature {
+    opacity: 1 !important;
   }
 }

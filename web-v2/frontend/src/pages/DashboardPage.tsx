@@ -21,7 +21,22 @@ import {
 } from 'recharts'
 
 import { api, errorMessage } from '../api/client'
-import { Money, PageHeader, Spinner } from '../components/ui'
+import {
+  Money,
+  PageHeader,
+  Spinner,
+  StatCard,
+} from '../components/ui'
+import {
+  chartAxisStroke,
+  chartColors,
+  chartCursorFill,
+  chartGradients,
+  chartGridStroke,
+  chartTickColor,
+  chartTooltipStyle,
+  fillFor,
+} from '../utils/chartTheme'
 
 type Dashboard = {
   summary: {
@@ -57,32 +72,24 @@ type Dashboard = {
 
 const formatMoney = (value: unknown) => {
   const number = Number(value)
-
-  if (!Number.isFinite(number)) {
-    return 'Rs 0'
-  }
-
+  if (!Number.isFinite(number)) return 'Rs 0'
   return `Rs ${number.toLocaleString('en-PK')}`
 }
 
 const formatCompactMoney = (value: unknown) => {
   const number = Number(value)
-
-  if (!Number.isFinite(number)) {
-    return 'Rs 0'
-  }
-
+  if (!Number.isFinite(number)) return 'Rs 0'
   return `Rs ${new Intl.NumberFormat('en-PK', {
     notation: 'compact',
     maximumFractionDigits: 1,
   }).format(number)}`
 }
 
-const tooltipStyle = {
-  borderRadius: '12px',
-  border: '1px solid #e2e8f0',
-  boxShadow: '0 10px 25px rgba(15, 23, 42, 0.08)',
-}
+const compactMoneyFormatter = (n: number) =>
+  `Rs ${new Intl.NumberFormat('en-PK', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(n)}`
 
 export function DashboardPage() {
   const query = useQuery({
@@ -99,10 +106,7 @@ export function DashboardPage() {
     return (
       <div className="space-y-4">
         <PageHeader title="Dashboard" />
-
-        <div className="card p-5 text-red-700">
-          {errorMessage(query.error)}
-        </div>
+        <div className="card p-5 text-danger">{errorMessage(query.error)}</div>
       </div>
     )
   }
@@ -112,268 +116,297 @@ export function DashboardPage() {
   const cards = [
     {
       label: 'Total revenue',
-      value: <Money value={data.summary.total_sales_revenue} />,
+      value: data.summary.total_sales_revenue,
       icon: Banknote,
-      tone: 'bg-emerald-100 text-emerald-700',
+      tone: 'emerald' as const,
+      format: compactMoneyFormatter,
     },
     {
       label: 'Gross profit',
-      value: <Money value={data.summary.gross_profit} />,
+      value: data.summary.gross_profit,
       icon: TrendingUp,
-      tone: 'bg-blue-100 text-blue-700',
+      tone: 'brand' as const,
+      format: compactMoneyFormatter,
     },
     {
       label: 'Inventory cost',
-      value: <Money value={data.summary.inventory_cost_value} />,
+      value: data.summary.inventory_cost_value,
       icon: Boxes,
-      tone: 'bg-violet-100 text-violet-700',
+      tone: 'violet' as const,
+      format: compactMoneyFormatter,
     },
     {
       label: 'Potential retail',
-      value: <Money value={data.summary.potential_retail_value} />,
+      value: data.summary.potential_retail_value,
       icon: WalletCards,
-      tone: 'bg-cyan-100 text-cyan-700',
+      tone: 'cyan' as const,
+      format: compactMoneyFormatter,
     },
     {
       label: 'Low-stock products',
       value: data.summary.low_stock_count,
       icon: AlertTriangle,
-      tone: 'bg-amber-100 text-amber-700',
+      tone: 'amber' as const,
     },
     {
       label: 'Total products',
       value: data.summary.total_products,
       icon: PackageCheck,
-      tone: 'bg-indigo-100 text-indigo-700',
+      tone: 'blue' as const,
     },
     {
       label: 'Sales invoices',
       value: data.summary.sales_invoices,
       icon: FileText,
-      tone: 'bg-rose-100 text-rose-700',
+      tone: 'rose' as const,
     },
     {
       label: 'Customers',
       value: data.summary.customers,
       icon: Users,
-      tone: 'bg-teal-100 text-teal-700',
+      tone: 'accent' as const,
     },
+  ]
+
+  const categoryColors = [
+    chartColors.accent,
+    chartColors.brand,
+    chartColors.cyan,
+    chartColors.emerald,
+    chartColors.amber,
+    chartColors.violet,
+    chartColors.blue,
+    chartColors.rose,
   ]
 
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        subtitle="A live overview of sales and inventory health."
-      />
+      {/* Hero — Business Health Banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card mb-8 p-6 md:p-8">
+        {/* Subtle chartreuse glow */}
+        <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl" />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map(({ label, value, icon: Icon, tone }) => (
-          <div className="card p-5" key={label}>
-            <div
-              className={`mb-4 grid h-11 w-11 place-items-center rounded-xl ${tone}`}
-            >
-              <Icon className="h-5 w-5" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-card-2 px-3 py-1 text-xs font-semibold text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              Live Telemetry
             </div>
-
-            <p className="text-sm font-medium text-slate-500">{label}</p>
-
-            <p className="mt-1 text-2xl font-bold text-slate-950">
-              {value}
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-fg">
+              State of the <span className="text-brand-500">Business</span>
+            </h1>
+            <p className="mt-2 text-sm text-muted max-w-md leading-relaxed">
+              Real-time sales performance, margin spread, and inventory health metrics.
             </p>
           </div>
-        ))}
-      </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-        <section className="card p-5">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="font-bold text-slate-900">
-              Monthly revenue vs gross profit
-            </h2>
-
-            <span className="text-xs font-medium text-slate-500">
-              Values in PKR
-            </span>
+          <div className="grid grid-cols-2 divide-x divide-border rounded-xl border border-border bg-card-2 overflow-hidden shrink-0">
+            <div className="px-5 py-3.5 text-left">
+              <p className="text-[11px] uppercase tracking-wider text-muted font-bold mb-1">Total Revenue</p>
+              <p className="text-xl md:text-2xl font-bold text-fg font-mono tracking-tight">
+                {compactMoneyFormatter(data.summary.total_sales_revenue)}
+              </p>
+            </div>
+            <div className="px-5 py-3.5 text-left">
+              <p className="text-[11px] uppercase tracking-wider text-muted font-bold mb-1">Gross Profit</p>
+              <p className="text-xl md:text-2xl font-bold text-brand-500 font-mono tracking-tight">
+                {compactMoneyFormatter(data.summary.gross_profit)}
+              </p>
+            </div>
           </div>
-
-          <div className="mt-5 h-80">
-            {data.monthly_sales.length ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={data.monthly_sales}
-                  margin={{ top: 8, right: 12, left: 8, bottom: 4 }}
-                  accessibilityLayer
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="#e2e8f0"
-                  />
-
-                  <XAxis
-                    dataKey="month"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={{ stroke: '#cbd5e1' }}
-                  />
-
-                  <YAxis
-                    width={72}
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => formatCompactMoney(value)}
-                  />
-
-                  <Tooltip
-                    formatter={(value, name) => [
-                      formatMoney(value),
-                      String(name),
-                    ]}
-                    contentStyle={tooltipStyle}
-                    cursor={{ fill: 'rgba(148, 163, 184, 0.12)' }}
-                  />
-
-                  <Legend
-                    verticalAlign="top"
-                    align="right"
-                    iconType="circle"
-                    iconSize={9}
-                    wrapperStyle={{ paddingBottom: '14px' }}
-                  />
-
-                  <Bar
-                    dataKey="revenue"
-                    name="Revenue"
-                    fill="#0f766e"
-                    radius={[6, 6, 0, 0]}
-                  />
-
-                  <Bar
-                    dataKey="profit"
-                    name="Gross profit"
-                    fill="#3b82f6"
-                    radius={[6, 6, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="grid h-full place-items-center text-slate-400">
-                Sales will appear here.
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="card p-5">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="font-bold text-slate-900">
-              Profit by category
-            </h2>
-
-            <span className="text-xs font-medium text-slate-500">
-              Values in PKR
-            </span>
-          </div>
-
-          <div className="mt-5 h-80">
-            {data.category_profit.length ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={data.category_profit}
-                  layout="vertical"
-                  margin={{ top: 8, right: 20, left: 8, bottom: 4 }}
-                  accessibilityLayer
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    horizontal={false}
-                    stroke="#e2e8f0"
-                  />
-
-                  <XAxis
-                    type="number"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={{ stroke: '#cbd5e1' }}
-                    tickFormatter={(value) => formatCompactMoney(value)}
-                  />
-
-                  <YAxis
-                    type="category"
-                    dataKey="category"
-                    width={112}
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-
-                  <Tooltip
-                    formatter={(value) => [
-                      formatMoney(value),
-                      'Gross profit',
-                    ]}
-                    contentStyle={tooltipStyle}
-                    cursor={{ fill: 'rgba(148, 163, 184, 0.12)' }}
-                  />
-
-                  <Bar
-                    dataKey="profit"
-                    name="Gross profit"
-                    fill="#14b8a6"
-                    radius={[0, 6, 6, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="grid h-full place-items-center text-slate-400">
-                No category profit yet.
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
-
-      <section className="card mt-6 overflow-hidden">
-        <div className="border-b border-slate-200 px-5 py-4">
-          <h2 className="font-bold text-slate-900">
-            Low-stock attention list
-          </h2>
         </div>
+      </div>
 
-        {data.low_stock.length ? (
-          <div className="divide-y divide-slate-100">
-            {data.low_stock.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col gap-2 px-5 py-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <p className="font-medium text-slate-800">
-                    {item.name}
-                  </p>
-
-                  {item.supplier ? (
-                    <p className="mt-0.5 text-xs text-slate-500">
-                      Supplier: {item.supplier}
-                    </p>
-                  ) : null}
-                </div>
-
-                <span className="badge w-fit bg-amber-100 text-amber-800">
-                  {item.stock_quantity} left · reorder at{' '}
-                  {item.reorder_level}
-                </span>
-              </div>
+      {/* Primary Bento Layout */}
+      <div className="grid gap-8 xl:grid-cols-3">
+        {/* Left Column: KPI Grid & Main Chart (2 cols wide) */}
+        <div className="xl:col-span-2 space-y-8">
+          <div className="grid gap-5 grid-cols-2 lg:grid-cols-3">
+            {cards.map(({ label, value, icon, tone, format }) => (
+              <StatCard
+                key={label}
+                label={label}
+                value={value}
+                icon={icon}
+                tone={tone}
+                format={format}
+              />
             ))}
           </div>
-        ) : (
-          <div className="p-5 text-sm text-emerald-700">
-            All active products are above their reorder level.
-          </div>
-        )}
-      </section>
+
+          <section className="card p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-lg font-bold text-fg">Revenue vs Gross Profit Velocity</h2>
+                <p className="text-xs text-muted">Monthly financial comparison across active quarters</p>
+              </div>
+              <span className="badge badge-neutral text-xs">PKR Standard</span>
+            </div>
+
+            <div className="h-80">
+              {data.monthly_sales.length ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={data.monthly_sales}
+                    margin={{ top: 8, right: 12, left: 8, bottom: 4 }}
+                    accessibilityLayer
+                  >
+                    <defs>{chartGradients}</defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartGridStroke()} />
+                    <XAxis
+                      dataKey="month"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={{ stroke: chartAxisStroke() }}
+                      tick={{ fill: chartTickColor() }}
+                    />
+                    <YAxis
+                      width={72}
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: chartTickColor() }}
+                      tickFormatter={(value) => formatCompactMoney(value)}
+                    />
+                    <Tooltip
+                      formatter={(value, name) => [formatMoney(value), String(name)]}
+                      contentStyle={chartTooltipStyle()}
+                      cursor={{ fill: chartCursorFill() }}
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      align="right"
+                      iconType="circle"
+                      iconSize={9}
+                      wrapperStyle={{ paddingBottom: '14px', color: chartTickColor() }}
+                    />
+                    <Bar
+                      dataKey="revenue"
+                      name="Revenue"
+                      fill={fillFor('gradInk')}
+                      radius={[6, 6, 0, 0]}
+                      isAnimationActive
+                      animationDuration={800}
+                    />
+                    <Bar
+                      dataKey="profit"
+                      name="Gross profit"
+                      fill={fillFor('gradChartreuse')}
+                      radius={[6, 6, 0, 0]}
+                      isAnimationActive
+                      animationDuration={800}
+                      animationBegin={100}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="grid h-full place-items-center text-faint">
+                  Sales telemetry will populate upon first transaction.
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column: Category Distribution & Stock Alerts Rail */}
+        <div className="space-y-6">
+          <section className="card p-6">
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h2 className="text-base font-bold text-fg">Category Performance</h2>
+              <span className="text-xs text-muted">Profit contribution</span>
+            </div>
+
+            <div className="h-64">
+              {data.category_profit.length ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={data.category_profit}
+                    layout="vertical"
+                    margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
+                    accessibilityLayer
+                  >
+                    <defs>{chartGradients}</defs>
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={chartGridStroke()} />
+                    <XAxis
+                      type="number"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={{ stroke: chartAxisStroke() }}
+                      tick={{ fill: chartTickColor() }}
+                      tickFormatter={(value) => formatCompactMoney(value)}
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="category"
+                      width={100}
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: chartTickColor() }}
+                    />
+                    <Tooltip
+                      formatter={(value) => [formatMoney(value), 'Gross Profit']}
+                      contentStyle={chartTooltipStyle()}
+                      cursor={{ fill: chartCursorFill() }}
+                    />
+                    <Bar
+                      dataKey="profit"
+                      name="Gross profit"
+                      fill={fillFor('gradChartreuse')}
+                      radius={[0, 6, 6, 0]}
+                      isAnimationActive
+                      animationDuration={800}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="grid h-full place-items-center text-faint">
+                  No category distribution recorded yet.
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Low Stock Attention Radar */}
+          <section className="card overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4 bg-card-2/40">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-400" />
+                <h2 className="font-bold text-fg text-sm">Stock Attention Radar</h2>
+              </div>
+              <span className="badge badge-warning text-xs">{data.low_stock.length} Low</span>
+            </div>
+
+            {data.low_stock.length ? (
+              <div className="divide-y divide-border-soft max-h-72 overflow-y-auto">
+                {data.low_stock.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-4 hover:bg-card-hover/40 transition-colors"
+                  >
+                    <div>
+                      <p className="font-semibold text-fg text-sm">{item.name}</p>
+                      {item.supplier ? (
+                        <p className="text-xs text-muted mt-0.5">Supplier: {item.supplier}</p>
+                      ) : null}
+                    </div>
+                    <div className="text-right">
+                      <span className="badge badge-warning text-xs">
+                        {item.stock_quantity} remaining
+                      </span>
+                      <p className="text-[11px] text-faint mt-0.5">Threshold: {item.reorder_level}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-sm text-emerald-400 font-medium">
+                ✨ Catalog optimal. All items above reorder thresholds.
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     </>
   )
 }

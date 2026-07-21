@@ -6,8 +6,10 @@ import {
   EyeOff,
   LoaderCircle,
   LockKeyhole,
+  Moon,
   ShieldCheck,
   Store,
+  Sun,
   UserRound,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -22,15 +24,11 @@ import { z } from 'zod'
 import { errorMessage } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { Alert } from '../components/ui'
+import { useTheme } from '../theme/useTheme'
 
 export const loginSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(1, 'Enter your username'),
-  password: z
-    .string()
-    .min(1, 'Enter your password'),
+  username: z.string().trim().min(1, 'Enter your username'),
+  password: z.string().min(1, 'Enter your password'),
 })
 
 type Form = z.infer<typeof loginSchema>
@@ -51,8 +49,7 @@ const systemFeatures = [
   {
     icon: BarChart3,
     title: 'Decision-ready analytics',
-    description:
-      'Live KPIs, low-stock alerts, and profitability reports.',
+    description: 'Live KPIs, low-stock alerts, and profitability reports.',
   },
 ]
 
@@ -60,6 +57,7 @@ export function LoginPage() {
   const { user, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const { theme, toggleTheme } = useTheme()
 
   const [visible, setVisible] = useState(false)
   const [error, setError] = useState('')
@@ -67,16 +65,10 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-      isSubmitting,
-    },
+    formState: { errors, isSubmitting },
   } = useForm<Form>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      username: '',
-      password: '',
-    },
+    defaultValues: { username: '', password: '' },
   })
 
   if (user) {
@@ -85,17 +77,10 @@ export function LoginPage() {
 
   const submit = handleSubmit(async (values) => {
     setError('')
-
     try {
       await login(values.username, values.password)
-
-      const destination = (
-        location.state as { from?: string } | null
-      )?.from
-
-      navigate(destination ?? '/', {
-        replace: true,
-      })
+      const destination = (location.state as { from?: string } | null)?.from
+      navigate(destination ?? '/', { replace: true })
     } catch (err) {
       setError(errorMessage(err))
     }
@@ -106,185 +91,122 @@ export function LoginPage() {
       className="login-shell relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4 sm:p-8"
       aria-labelledby="login-heading"
     >
-      <div
-        className="login-grid pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      />
+      <div className="login-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="login-orb login-orb-one pointer-events-none absolute rounded-full" aria-hidden="true" />
+      <div className="login-orb login-orb-two pointer-events-none absolute rounded-full" aria-hidden="true" />
 
-      <div
-        className="login-orb login-orb-one pointer-events-none absolute rounded-full"
-        aria-hidden="true"
-      />
-
-      <div
-        className="login-orb login-orb-two pointer-events-none absolute rounded-full"
-        aria-hidden="true"
-      />
+      {/* Theme toggle floating in corner */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        className="absolute right-5 top-5 z-20 grid h-11 w-11 place-items-center rounded-xl border border-border bg-card text-fg shadow-sm transition hover:bg-card-2"
+      >
+        {theme === 'dark' ? (
+          <Sun className="h-5 w-5" />
+        ) : (
+          <Moon className="h-5 w-5" />
+        )}
+      </button>
 
       <section
-        className="login-card login-card-enter relative z-10 grid w-full max-w-5xl overflow-hidden rounded-[1.75rem] border border-white/70 bg-white md:min-h-[620px] md:grid-cols-[1.05fr_0.95fr]"
+        className="login-card login-card-enter relative z-10 grid w-full max-w-4xl overflow-hidden rounded-2xl border border-border bg-card text-fg shadow-2xl md:grid-cols-[1fr_1fr]"
         aria-label="POS and inventory staff portal"
       >
-        <div className="login-brand-panel relative overflow-hidden bg-slate-950 p-7 text-white sm:p-10">
-          <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(20,184,166,0.24),transparent_33%),radial-gradient(circle_at_90%_90%,rgba(59,130,246,0.18),transparent_40%)]"
-            aria-hidden="true"
-          />
-
-          <div className="login-brand-enter relative z-10 flex h-full flex-col">
-            <div>
-              <div className="flex items-center gap-4">
-                <div className="login-logo grid h-14 w-14 place-items-center rounded-2xl bg-brand-600 shadow-lg shadow-brand-950/30">
-                  <Store
-                    className="h-7 w-7"
-                    aria-hidden="true"
-                  />
-                </div>
-
-                <div>
-                  <p className="text-lg font-bold tracking-tight">
-                    POS &amp; Inventory
-                  </p>
-
-                  <p className="text-sm text-slate-400">
-                    Management Information System
-                  </p>
-                </div>
+        <div className="login-brand-panel relative flex flex-col justify-between bg-card-2 p-8 text-fg sm:p-10 border-b md:border-b-0 md:border-r border-border">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="login-logo grid h-10 w-10 place-items-center rounded-xl bg-brand-500 text-inverse shadow-sm">
+                <Store className="h-5 w-5" aria-hidden="true" />
               </div>
-
-              <div className="mt-10">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
-                  <ShieldCheck
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  />
-                  Secure staff portal
-                </div>
-
-                <h2 className="mt-5 max-w-md text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-                  Operate efficiently.
-                  <span className="block text-brand-500">
-                    Decide confidently.
-                  </span>
-                </h2>
-
-                <p className="mt-4 max-w-md text-sm leading-6 text-slate-300 sm:text-base">
-                  One integrated workspace for daily transactions,
-                  inventory control, and managerial decision support.
+              <div>
+                <p className="text-base font-bold tracking-tight text-fg">
+                  POS &amp; Inventory
+                </p>
+                <p className="text-xs text-muted">
+                  Management System
                 </p>
               </div>
             </div>
 
-            <div className="mt-9 hidden gap-5 sm:grid">
-              {systemFeatures.map(
-                ({
-                  icon: Icon,
-                  title,
-                  description,
-                }) => (
-                  <div
-                    className="login-feature flex gap-3"
-                    key={title}
-                  >
-                    <div className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-brand-500">
-                      <Icon
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                      />
-                    </div>
+            <div className="mt-8">
+              <h2 className="text-2xl font-extrabold leading-snug tracking-tight sm:text-3xl text-fg">
+                Operate efficiently.<br />
+                <span className="text-brand-500">Decide confidently.</span>
+              </h2>
 
-                    <div>
-                      <h3 className="text-sm font-semibold text-white">
-                        {title}
-                      </h3>
-
-                      <p className="mt-1 text-xs leading-5 text-slate-400">
-                        {description}
-                      </p>
-                    </div>
-                  </div>
-                ),
-              )}
+              <p className="mt-3 text-xs leading-relaxed text-muted max-w-xs">
+                Single integrated portal for cashier operations, real-time inventory tracking, and decision support.
+              </p>
             </div>
+          </div>
 
-            <p className="mt-auto hidden pt-8 text-xs text-slate-500 sm:block">
-              TPS operations • Inventory control • DSS analytics
-            </p>
+          <div className="mt-8 pt-6 border-t border-border/60">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">System Capabilities</p>
+            <div className="flex items-center gap-3">
+              {systemFeatures.map(({ icon: Icon, title }) => (
+                <div 
+                  key={title} 
+                  title={title}
+                  className="grid h-10 w-10 place-items-center rounded-xl bg-card border border-border text-brand-500 hover:border-brand-500/50 transition-colors"
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="login-form-panel flex items-center bg-white p-7 sm:p-10">
-          <div className="mx-auto w-full max-w-md">
+        <div className="login-form-panel flex items-center bg-card p-8 sm:p-10">
+          <div className="mx-auto w-full max-w-sm">
             <div>
-              <p className="text-sm font-semibold text-brand-700">
-                Authorized access
-              </p>
-
               <h1
                 id="login-heading"
-                className="mt-2 text-3xl font-bold tracking-tight text-slate-950"
+                className="text-2xl font-bold tracking-tight text-fg"
               >
-                Welcome back
+                Sign In
               </h1>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Enter your staff credentials to access the management system.
+              <p className="mt-1 text-xs text-muted">
+                Enter your credentials to access your account.
               </p>
             </div>
 
-            <form
-              className="mt-8 space-y-5"
-              onSubmit={submit}
-              noValidate
-            >
+            <form className="mt-8 space-y-5" onSubmit={submit} noValidate>
               {error ? (
-                <div
-                  role="alert"
-                  aria-live="polite"
-                  className="login-alert"
-                >
+                <div role="alert" aria-live="polite" className="login-alert">
                   <Alert>{error}</Alert>
                 </div>
               ) : null}
 
               <div>
-                <label
-                  className="label"
-                  htmlFor="username"
-                >
+                <label className="label" htmlFor="username">
                   Username
                 </label>
-
                 <div className="group relative">
                   <UserRound
-                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-brand-700"
+                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted transition-colors group-focus-within:text-brand-500"
                     aria-hidden="true"
                   />
-
                   <input
                     id="username"
-                    className="input min-h-12 pl-11 pr-4"
+                    className="input min-h-11 pl-10 pr-4"
                     autoComplete="username"
                     autoCapitalize="none"
                     spellCheck={false}
                     autoFocus
-                    aria-invalid={
-                      errors.username ? 'true' : 'false'
-                    }
+                    aria-invalid={errors.username ? 'true' : 'false'}
                     aria-describedby={
-                      errors.username
-                        ? 'username-error'
-                        : undefined
+                      errors.username ? 'username-error' : undefined
                     }
-                    placeholder="Enter your username"
+                    placeholder="Username"
                     {...register('username')}
                   />
                 </div>
-
                 {errors.username ? (
                   <p
                     id="username-error"
-                    className="mt-1.5 text-xs font-medium text-red-600"
+                    className="mt-1 text-xs font-medium text-danger"
                     role="alert"
                   >
                     {errors.username.message}
@@ -293,73 +215,46 @@ export function LoginPage() {
               </div>
 
               <div>
-                <div className="mb-1.5 flex items-center justify-between">
-                  <label
-                    className="text-sm font-semibold text-slate-700"
-                    htmlFor="password"
-                  >
+                <div className="mb-1 flex items-center justify-between">
+                  <label className="label" htmlFor="password">
                     Password
                   </label>
-
-                  <span className="text-xs text-slate-400">
-                    Case-sensitive
-                  </span>
                 </div>
-
                 <div className="group relative">
                   <LockKeyhole
-                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-brand-700"
+                    className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted transition-colors group-focus-within:text-brand-500"
                     aria-hidden="true"
                   />
-
                   <input
                     id="password"
                     type={visible ? 'text' : 'password'}
-                    className="input min-h-12 pl-11 pr-12"
+                    className="input min-h-11 pl-10 pr-10"
                     autoComplete="current-password"
-                    aria-invalid={
-                      errors.password ? 'true' : 'false'
-                    }
+                    aria-invalid={errors.password ? 'true' : 'false'}
                     aria-describedby={
-                      errors.password
-                        ? 'password-error'
-                        : undefined
+                      errors.password ? 'password-error' : undefined
                     }
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     {...register('password')}
                   />
-
                   <button
                     type="button"
-                    aria-label={
-                      visible
-                        ? 'Hide password'
-                        : 'Show password'
-                    }
+                    aria-label={visible ? 'Hide password' : 'Show password'}
                     aria-pressed={visible}
-                    className="absolute right-1 top-1/2 grid min-h-10 min-w-10 -translate-y-1/2 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1"
-                    onClick={() =>
-                      setVisible((current) => !current)
-                    }
+                    className="absolute right-1 top-1/2 grid min-h-9 min-w-9 -translate-y-1/2 place-items-center rounded-lg text-muted transition hover:bg-card-2 hover:text-fg"
+                    onClick={() => setVisible((current) => !current)}
                   >
                     {visible ? (
-                      <EyeOff
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
+                      <EyeOff className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Eye
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
+                      <Eye className="h-4 w-4" aria-hidden="true" />
                     )}
                   </button>
                 </div>
-
                 {errors.password ? (
                   <p
                     id="password-error"
-                    className="mt-1.5 text-xs font-medium text-red-600"
+                    className="mt-1 text-xs font-medium text-danger"
                     role="alert"
                   >
                     {errors.password.message}
@@ -368,36 +263,21 @@ export function LoginPage() {
               </div>
 
               <button
-                className="login-submit btn-primary relative min-h-12 w-full overflow-hidden"
+                className="btn-primary relative min-h-11 w-full mt-2"
                 disabled={isSubmitting}
                 type="submit"
               >
                 {isSubmitting ? (
                   <>
-                    <LoaderCircle
-                      className="h-4 w-4 animate-spin"
-                      aria-hidden="true"
-                    />
+                    <LoaderCircle className="h-4 w-4 spin-soft" aria-hidden="true" />
                     Signing in…
                   </>
                 ) : (
                   <>
-                    <LockKeyhole
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    />
-                    Sign in securely
+                    Sign in
                   </>
                 )}
               </button>
-
-              <p className="flex items-center justify-center gap-2 text-center text-xs text-slate-400">
-                <ShieldCheck
-                  className="h-4 w-4 text-emerald-600"
-                  aria-hidden="true"
-                />
-                Your session is protected with secure authentication.
-              </p>
             </form>
           </div>
         </div>

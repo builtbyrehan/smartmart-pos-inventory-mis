@@ -1,0 +1,23 @@
+# Frontend
+web-v2/frontend/node_modules/
+web-v2/frontend/dist/
+
+# Backend Python environment and cache
+web-v2/backend/.venv/
+__pycache__/
+*.py[cod]
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# IDE and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+coverage/

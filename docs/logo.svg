@@ -1,0 +1,26 @@
+<svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#121212"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C6FF00"/>
+      <stop offset="100%" stop-color="#8FB300"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="212" height="212" rx="42" fill="url(#bg)" stroke="#2C2C2C" stroke-width="2"/>
+
+  <!-- storefront / crate icon -->
+  <g transform="translate(46,54)">
+    <path d="M0 24 L64 24 L58 4 L6 4 Z" fill="url(#accent)"/>
+    <rect x="4" y="26" width="120" height="14" rx="3" fill="url(#accent)" transform="translate(0,0)"/>
+    <rect x="6" y="42" width="116" height="66" rx="6" fill="none" stroke="url(#accent)" stroke-width="6"/>
+    <rect x="52" y="66" width="24" height="42" rx="2" fill="url(#accent)"/>
+  </g>
+
+  <!-- pulse / analytics tick -->
+  <polyline points="34,168 62,168 74,148 88,182 100,158 112,168 186,168"
+    fill="none" stroke="url(#accent)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

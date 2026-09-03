@@ -2,7 +2,7 @@
 
 <img src="docs/header-animated.svg" width="100%" alt="SmartMart animated header — pulsing green gradient with rising particles"/>
 
-<a href="https://github.com/YOUR-USERNAME/smartmart-pos-inventory-mis">
+<a href="https://github.com/builtbyrehan/smartmart-pos-inventory-mis">
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=22&duration=2400&pause=800&color=39FF88&center=true&vCenter=true&width=720&lines=Operate+efficiently.+Decide+confidently.;Role-based+access+%7C+Atomic+stock+transactions;Real-time+dashboards+%7C+Light+%26+Dark+mode;Server-validated+sales+%7C+Zero+trust+on+the+client" alt="Typing SVG" />
 </a>
 
@@ -388,11 +388,11 @@ POS_IMIS_App/
 ### 1. Clone the repository
 
 ```powershell
-git clone https://github.com/YOUR-USERNAME/smartmart-pos-inventory-mis.git
+git clone https://github.com/builtbyrehan/smartmart-pos-inventory-mis.git
 cd smartmart-pos-inventory-mis
 ```
 
-Replace `YOUR-USERNAME` with the repository owner's GitHub username.
+
 
 ### 2. Prepare MySQL
 
